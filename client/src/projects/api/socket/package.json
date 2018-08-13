@@ -1,0 +1,7 @@
+{
+    "name": "jso",
+    "version": "0.0.1",
+    "main": "jso.js",
+    "private": true,
+    "consumes": [""]
+}

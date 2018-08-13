@@ -1,0 +1,118 @@
+a {
+    color: black;
+    font-weight: none;
+    text-decoration: none;
+}
+a:hover {
+    text-decoration: underline;   
+}
+.default {
+    --primary-color: #009788;
+    --transition-fn1: cubic-bezier(0.4, 0, 0.2, 1);
+    &.common {
+        &.button {
+            position: relative;
+            border: none;
+            outline:none;
+            cursor: pointer;
+            background: #89669b;
+            color: white;
+            border-radius: 2px;
+            font-size: 22px;
+            overflow:hidden;
+            &.primary {
+                color: #fff;
+                background-color: #2A7FC8;
+                &:focus {
+                    outline:0;
+                    color: #fff;
+                    background-color: #286090;
+                    border-color: #122b40;
+                }
+                &:hover {
+                    color: #fff;
+                    background-color: #286090;
+                    border-color: #204d74;
+                }
+                &:active {
+                    color: #fff;
+                    background-color: #286090;
+                    border-color: #204d74;
+                    background-image: none;
+                    &:hover {
+                        color: #fff;
+                        background-color: #204d74;
+                        border-color: #122b40;
+                    }
+                    &:focus {
+                        color: #fff;
+                        background-color: #204d74;
+                        border-color: #122b40;
+                    }
+                }
+                &:active.focus {
+                    color: #fff;
+                    background-color: #204d74;
+                    border-color: #122b40;
+                }
+                &.badge {
+                    color: #337ab7;
+                    background-color: #fff;
+                }
+            }
+            &.moon {
+                border-radius: 5px;
+                color: #ED2828;
+                background-color: #2A7FC8;
+                &:focus {
+                    outline:0;
+                    color: #000000;
+                    background-color: #286090;
+                    border-color: #122b40;
+                }
+                &:hover {
+                    color: #fff;
+                    background-color: #286090;
+                    border-color: #204d74;
+                }
+                &:active {
+                    color: #fff;
+                    background-color: #286090;
+                    border-color: #204d74;
+                    background-image: none;
+                    &:hover {
+                        color: #fff;
+                        background-color: #204d74;
+                        border-color: #122b40;
+                    }
+                    &:focus {
+                        color: #fff;
+                        background-color: #204d74;
+                        border-color: #122b40;
+                    }
+                }
+                &:active.focus {
+                    color: #fff;
+                    background-color: #204d74;
+                    border-color: #122b40;
+                }
+                &.badge {
+                    color: #337ab7;
+                    background-color: #fff;
+                }
+            }
+        }
+    }
+    &.form {
+        &.input {
+            &.default {
+                touch-action: manipulation;
+                padding:5px; 
+                border-top:2px solid #ccc; 
+                width: 98%;
+            }
+        }
+    }
+}
+
+

@@ -1,0 +1,7 @@
+{
+    "name": "socket",
+    "version": "0.0.1",
+    "main": "socket.js",
+    "private": true,
+    "consumes": []
+}

@@ -1,0 +1,45 @@
+body {
+    background-color: gray;
+    overflow: hidden;
+    height: 100%;
+    padding: 0px;
+    margin: 0px;
+    overflow: hidden;
+    user-select: none;
+}
+
+html {
+    overflow: hidden;
+    height: 100%;
+    padding: 0px;
+    margin: 0px
+}
+
+.crust--land {
+    background-color: gray;
+    overflow: hidden;
+    height: 100%;
+    padding: 0px;
+    margin: 0px;
+    overflow: hidden;
+    user-select: none;
+}
+
+.crust--ripple {
+    position: absolute;
+    border-radius: 50%;
+    width: 100px;
+    height: 100px;
+    animation: ripple-animation 300ms forwards;
+}
+
+@keyframes ripple-animation {
+    from {
+        transform: scale3d(0, 0, 0);
+        opacity: 1;
+    }
+    to {
+        transform: none;
+        opacity: 0.4;
+    }
+}

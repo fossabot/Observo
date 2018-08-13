@@ -1,0 +1,61 @@
+{
+  "name": "observo",
+  "version": "1.0.0",
+  "description": "Robotics Scouting System",
+  "main": "./src/init.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "preact": "node_modules/.bin/webpack-dev-server"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/OnoTools/Observo.git"
+  },
+  "keywords": [
+    "Observo",
+    "Scouting",
+    "Data"
+  ],
+  "author": "OnoTools",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/OnoTools/Observo/issues"
+  },
+  "target": "electron",
+  "homepage": "https://github.com/OnoTools/Observo#readme",
+  "devDependencies": {
+    "@blueprintjs/core": "^2.3.1",
+    "@blueprintjs/table": "^2.1.1",
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.3",
+    "babel-loader": "^7.1.4",
+    "babel-plugin-module-resolver": "^3.1.1",
+    "babel-plugin-transform-react-jsx": "^6.24.1",
+    "babel-plugin-transform-require-ignore": "^0.1.1",
+    "babel-polyfill": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-es2016": "^6.24.1",
+    "babel-register": "^6.26.0",
+    "classnames": "^2.2.6",
+    "electron": "^2.0.2",
+    "electron-prebuilt-compile": "^2.0.6",
+    "extract-text-webpack-plugin": "^4.0.0-beta.0",
+    "less": "^3.0.4",
+    "react-draggable": "^3.0.5",
+    "react-hot-loader": "^4.3.3",
+    "react-monaco-editor": "^0.17.2",
+    "react-transition-group": "^2.3.1",
+    "regenerator-runtime": "^0.11.1"
+  },
+  "dependencies": {
+    "amd-loader": "0.0.8",
+    "import-window": "^1.0.1",
+    "is-electron-renderer": "^2.0.1",
+    "node-notifier": "^5.2.1",
+    "react": "^16.4.1",
+    "react-desktop": "^0.3.5",
+    "react-dom": "^16.4.1",
+    "socket.io": "^2.1.1",
+    "socket.io-client": "^2.1.1"
+  }
+}

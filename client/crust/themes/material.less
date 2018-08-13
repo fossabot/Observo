@@ -1,0 +1,120 @@
+a {
+    color: black;
+    font-weight: none;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+.material {
+    font-family: 'Roboto', sans-serif;
+    --primary-color: #009788;
+    --secondary-color: #2196f3;
+    --accent-color: #ecec26;
+    --link-color: #009788;
+    --text-color: rgba(0, 0, 0, 0.8);
+    --transition-fn1: cubic-bezier(0.4, 0, 0.2, 1);
+    --elevation-1: 0px 2px 1px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12);
+    --elevation-1a: 0px 2px 1px -1px rgba(0, 0, 0, 0.1), 0px 1px 1px 0px rgba(0, 0, 0, 0.05), 0px 1px 3px 0px rgba(0, 0, 0, 0.12);
+    --elevation-2: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+    --elevation-5: 0px 3px 5px -1px rgba(0, 0, 0, 0.2), 0px 5px 8px 0px rgba(0, 0, 0, 0.14), 0px 1px 14px 0px rgba(0, 0, 0, 0.12);
+    --elevation-16: 0px 8px 10px -5px rgba(0, 0, 0, 0.2), 0px 16px 24px 2px rgba(0, 0, 0, 0.14), 0px 6px 30px 5px rgba(0, 0, 0, 0.12);
+    --elevation-24: 0px 11px 15px -7px rgba(0, 0, 0, 0.2), 0px 24px 38px 3px rgba(0, 0, 0, 0.14), 0px 9px 46px 8px rgba(0, 0, 0, 0.12);
+    &.common {
+        &.button {
+            position: relative;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            background: #89669b;
+            color: white;
+            border-radius: 2px;
+            overflow: hidden;
+            min-height: 34px;
+            padding: 5px 14px;
+            color: var(--secondary-color);
+            background: white;
+            border-radius: 2px;
+            box-shadow: var(--elevation-2);
+            font-size: 13px;
+            text-transform: uppercase;
+            font-weight: 500;
+            --trigger-effect: ripple;
+            --arrow-width: 11px;
+            --arrow-height: 11px;
+            --arrow-d: path("M 0.736 20.365 L 49.999 87.922 L 99.264 20.365 Z");
+            .ripple {
+                background: currentColor;
+            }
+            &.primary {
+                &:focus {
+                    &::before {
+                        position: absolute;
+                        top: 0;
+                        left: 0;
+                        width: 100%;
+                        height: 100%;
+                        display: block;
+                        background: currentColor;
+                        opacity: 0.1;
+                        content: "";
+                    }
+                }
+            }
+        }
+        &.card {
+            background: white;
+            box-shadow: 0px 2px 1px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12);
+            border-radius: 2px;
+            >header {
+                padding: 15px 30px;
+                display: flex;
+                align-items: center;
+                background: #f9f9f9;
+                border-top: 1px solid #e6e6e6;
+                border-bottom: 1px solid #e0e0e0;
+                h3 {
+                    margin: 0;
+                    flex: 1;
+                    line-height: 1;
+                }
+            }
+            >main {
+                padding: 30px;
+                h3 {
+                    &:first-child {
+                        margin-top: 0;
+                    }
+                }
+            }
+            main {
+                >p {
+                    line-height: 18px;
+                    margin: 10px 0;
+                    &:first-child {
+                        margin-top: 0;
+                    }
+                }
+            }
+        }
+    }
+    &.form {
+        &.input {
+            &.default {
+                touch-action: manipulation;
+                padding: 5px;
+                border-top: 2px solid #ccc;
+                width: 98%;
+            }
+        }
+    }
+    &.tab {
+        &.item {
+            .ripple {
+                background: orange;
+            }
+        }
+    }
+}

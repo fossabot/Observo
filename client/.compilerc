@@ -1,0 +1,32 @@
+{
+    "application/javascript": {
+        "presets": [
+            "react",
+            "env"
+        ],
+        "plugins": [
+            "react-hot-loader/babel",
+            "transform-async-to-generator",
+            [
+                "babel-plugin-transform-require-ignore",
+                {
+                    "extensions": [
+                        ".less",
+                        ".sass"
+                    ]
+                }
+            ],
+            [
+                "module-resolver",
+                {
+                    "root": [
+                        "./src"
+                    ],
+                    "alias": {
+                        "crust": "./crust/crust.jsx"
+                    }
+                }
+            ]
+        ]
+    }
+}

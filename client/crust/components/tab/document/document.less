@@ -1,0 +1,58 @@
+//ALL COLORS REMVOED FROM THIS FILE AT END
+@color: #009788;
+
+.crust--tab--document {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    position: relative;
+    background: @color;
+    height: 38px;
+    &:focus {
+        outline: none;
+    }
+    &.disabled {
+        opacity: 0.5;
+        pointer-events: none;
+    }
+}
+
+#open-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    margin: 0 10px;
+    order: 9999;
+    opacity: 0.7;
+    color: inherit;
+    -webkit-app-region: no-drag;
+}
+
+#open-button:hover {
+    opacity: 1;
+    cursor: pointer;
+}
+
+#open-button-path { 
+    color: white;
+    d: path("M 80 11 L 20 12 C 15 12 12 15 12 20 L 12 80 C 12 85 15 88 20 88 L 80 88 C 85 88 88 85 88 80 L 88 20 C 88 15 85 12 80 12 Z M 71 54 L 54 54 L 54 71 L 46 71 L 46 54 L 29 54 L 29 46 L 46 46 L 46 29 L 54 29 L 54 46 L 71 46 L 71 54 Z");    fill: currentColor;
+}
+
+#selection-indicator-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+#selection-indicator {
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+    left: 0;
+}
