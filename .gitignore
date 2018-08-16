@@ -3,3 +3,6 @@
 /client/package-lock.json
 /server/node_modules
 /server/package-lock.json
+/node_modules/
+/_test/
+/_test/package-lock.json

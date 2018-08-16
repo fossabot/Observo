@@ -49,6 +49,7 @@
   },
   "dependencies": {
     "amd-loader": "0.0.8",
+    "hotkeys-js": "^3.3.5",
     "import-window": "^1.0.1",
     "is-electron-renderer": "^2.0.1",
     "node-notifier": "^5.2.1",

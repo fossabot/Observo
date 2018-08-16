@@ -6,9 +6,43 @@
 var io = require('socket.io').listen(3000)
 var EventEmitter = require('events').EventEmitter; 
 var events = new EventEmitter();
- 
-Observo.onMount((imports) => {
-    
+const uuidv4 = require('uuid/v4'); //Random
+
+Observo.onCustomMount((imports) => {
+    let database = imports.api.database.API.getManager()
+
+    let socket = io.of("/core/").on('connection', function (client) {
+        let sessionKey = uuidv4()
+        console.log("$ENew Client: $f" + sessionKey)
+        client.once('disconnect', function () {
+            client.disconnect()
+        })
+        client.emit("auth_sessionKey", sessionKey) 
+        client.on("auth_signIn", function (data) {
+            console.log("CHECKING")
+            let username = data.username.trim()
+            let password = data.password.trim()
+            if (username != "" && username.length > 2 && password.length > 3) {
+                database.is
+                User(username, (check) => {
+                    if (!check) {
+                        /**
+                         * TODO:
+                         * CHECK SETTINGS HERE IF ADMIN DOESN'T WANT USER TO CREATE ACCOUNT
+                         */
+                        socket.emit("vaild_signUp", {username: username })
+                    } else {
+                        database.signIn(username, password, sessionKey, (response) => {
+                            if (response != null) {
+                                socket.emit("vaild_signIn", {authKey: response.authKey, sessionKey: sessionKey, uuid: response.uuid})
+                            }
+                        })
+                    }
+                })
+            }
+        })
+        
+    })
 })
 
 let handler = {}
@@ -23,7 +57,7 @@ Observo.register(null, {
                 re.exec(st), m = re.exec(st);
                 name = m[1] || m[2];
             }
-            console.log(name)
+            
             if (handler[name] == null) {
                 handler[name] = {}
                 let main = io.of("/plugins/" + name).on('connection', function (client) {

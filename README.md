@@ -19,5 +19,4 @@ Step 2: Make sure to have a MySQL/MariaDB running on default port
 
 Step 3: Run the server by: `node main.js` 
 
-
 (C) 2018 OnoTools and its contributors.

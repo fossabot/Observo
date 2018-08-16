@@ -26,7 +26,8 @@
                         "crust": "./crust/crust.jsx"
                     }
                 }
-            ]
+            ],
+            "transform-object-rest-spread"
         ]
     }
 }

@@ -10,15 +10,13 @@ export default class Grid extends Component {
         let id = ""
         let gridClass = classNames({
             'crust--grid--flex': true,
-            'crust--grid--row': (this.props.row & !this.props.center) || (this.props.canavs && !this.props.row),
+            'crust--grid--row': (this.props.row & !this.props.center) || (this.props.canvas && !this.props.row),
             'crust--grid--col': this.props.col & !this.props.center,
             'crust--grid--col-center': this.props.col && this.props.center,
-            'crust--grid--row-center': this.props.col && this.props.center,
+            'crust--grid--row-center': this.props.row && this.props.center,
         });
         let gridStyle = {}
-        if (this.props.style) {
-            gridStyle = this.props.style
-        }
+
         if (this.props.background) {
             gridStyle.backgroundColor = this.props.background
         }
@@ -38,7 +36,7 @@ export default class Grid extends Component {
             _id = this.props.id
         }
         return (
-            <div ref={this.props.gridRef} data-id={_id} className={classNames(gridClass, this.props.className)} id={id} style={gridStyle} onClick={this.props.onClick}>{this.props.children}</div>
+            <div ref={this.props.gridRef} data-id={_id} className={classNames(gridClass, this.props.className)} id={id} style={{...gridStyle, ...this.props.style}} onClick={this.props.onClick}>{this.props.children}</div>
         )
     }
 }

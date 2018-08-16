@@ -1,8 +1,8 @@
 
 
 var mysql = require("mysql")
-
-
+const uuidv4 = require('uuid/v4'); //Random
+const md5 = require("md5")
 const connect = (database = null) => {
     let data //Makes the variable here
     if (database != null) { //If no database is specified, it connects a default
@@ -234,6 +234,7 @@ class Database {
         })
     }
 }
+let manager = new Database();
 Observo.register(null, {
     GLOBAL: {
         load(projectName) {
@@ -241,6 +242,8 @@ Observo.register(null, {
         }
     },
     API: {
-        
+        getManager() {
+            return manager;
+        }
     }
 })

@@ -19,8 +19,8 @@ function createWindow() {
     show: false,
     backgroundColor: '#420024',
     frame: false,
-    resizable: false,
-    maximizable: false,
+    resizable: true,
+    maximizable: true,
     backgroundColor: 'gray',
     webPreferences: {
       zoomFactor: 0.9,
@@ -29,10 +29,11 @@ function createWindow() {
 
   // and load the index.html of the app.
   mainWindow.setURL(__dirname, "./src/explorer/index.html")
-  mainWindow.win.setFullScreenable(false)
-  mainWindow.win.setResizable(false)
-  mainWindow.win.setMinimumSize(800, 600);
-  //mainWin.openDevTools();
+  //mainWindow.win.setFullScreenable(false)
+  //mainWindow.win.setResizable(false)
+  //mainWindow.win.setMinimumSize(800, 600);
+  //mainWindow.win.setMaximumSize(800, 600);
+  mainWindow.openDevTools();
   mainWindow.win.once('ready-to-show', () => {
     mainWindow.win.show()
   })

@@ -8,38 +8,76 @@ const startTime = process.hrtime()
 class Logging {
     constructor() {
         this.chrome = false
-        this.prefix = ` ${this.colorText("magenta", "DML")} |`
+        this.prefix = this.setColors("$3 Observo $f|")
     }
-    colorText(color, text) {
-        switch (color) {
-            case 'black':
-                text = '\x1B[30m' + text; break;
-            case 'red':
-                text = '\x1B[31m' + text; break;
-            case 'green':
-                text = '\x1B[32m' + text; break;
-            case 'yellow':
-                text = '\x1B[33m' + text; break;
-            case 'blue':
-                text = '\x1B[34m' + text; break;
-            case 'magenta':
-                text = '\x1B[35m' + text; break;
-            case 'cyan':
-                text = '\x1B[36m' + text; break;
-            case 'white':
-                text = '\x1B[37m' + text; break;
-            default:
-                text = color + text; break;
+    setColors(data) {
+        let paint = (color, text) => {
+            switch (color) {
+                case '0'://black
+                    text = '\x1B[30m' + text; break;
+                case '4': //red
+                    text = '\x1B[31m' + text; break;
+                case '2': //green
+                    text = '\x1B[32m' + text; break;
+                case 'E': //yellow
+                    text = '\x1B[33m' + text; break;
+                case '1': //blue
+                    text = '\x1B[34m' + text; break;
+                case 'D': //magenta
+                    text = '\x1B[35m' + text; break;
+                case '3': //cyan
+                    text = '\x1B[36m' + text; break;
+                case 'f': //white
+                    text = '\x1B[37m' + text; break;
+                default:
+                    text = color + text; break;
+            }
+            return text + '\x1B[39m' + '\x1b[0m';
         }
-        return text + '\x1B[39m' + '\x1b[0m';
+        let output = ""
+        let painting = false
+        let grabColor = 0
+        let color = ""
+        let items = []
+        for (var i = 0; i < data.length; i++) {
+            if (data[i] == "$") {
+                if (painting) {
+                    if (output != "") {
+                        items.push(paint(color, output))
+                        painting = false
+                        output = ""
+                    }
+                }
+                grabColor = true
+                color = ""
+            }
+            if (grabColor) {
+                color = color + data[i]
+                if (color.length == 2) {
+                    grabColor = false
+                    painting = true
+                    color = color.replace("$", "")
+                }
+            } else {
+                output = output + data[i]
+            }
+        }
+        if (painting) {
+            items.push(paint(color, output))
+        }
+        output = ""
+        for (let i in items) {
+            output = output + items[i]
+        }
+        return output
+    }
+    log(message) { //2=green
 
-    };
-    log(message, color = "green") {
-        message = `${this.prefix} ${this.colorText(color, message)}`
+        message = `${this.prefix} ${this.setColors(`$2${message}`)}`
         console.log(message)
     }
     info(message) {
-        message = `${this.prefix} ${this.colorText("cyan", message)}`
+        message = `${this.prefix} ${this.setColors(`$3${message}`)}`
         console.log(message)
 
     }
@@ -81,7 +119,7 @@ class Manager extends EventEmitter {
     }
     appReady(callback) {
         this.on('app-ready', () => {
-            log.info("Succesfully loaded in: " +  ((process.hrtime(startTime)[0] * 1000) + (process.hrtime(startTime)[1] / 1000000)).toFixed(3) + "ms")
+            log.info("Succesfully loaded in: $f" +  ((process.hrtime(startTime)[0] * 1000) + (process.hrtime(startTime)[1] / 1000000)).toFixed(3) + "ms")
             callback(log)
         });
     }
@@ -103,7 +141,7 @@ class Manager extends EventEmitter {
                             self.defined[section][json.name].package = json
                             self.defined[section][json.name].registered = false
                             self.defined[section][json.name].services = {}
-                            log.log("NEW MODULE: " + json.name)
+                            log.log("$DNEW MODULE: " + json.name)
                             let dir = splitAt(f.lastIndexOf("/"))(f)[0]
                             if (json.main) {
 
@@ -128,13 +166,13 @@ class Manager extends EventEmitter {
     run(code, section, name, allowRequire) {
         let customConsole = {
             log: (message) => {
-                log.log(`[${section.toUpperCase()}][${name.toUpperCase()}] ${log.colorText("white", message)}`)
+                log.log(`[${section.toUpperCase()}][${name.toUpperCase()}] ${log.setColors(`$f${message}`)}`)
             },
             info: (message) => {
-                log.info(`[${section.toUpperCase()}][${name.toUpperCase()}] ${log.colorText("white", message)}`)
+                log.info(`[${section.toUpperCase()}][${name.toUpperCase()}] ${log.setColors(`$3${message}`)}`)
             },
             error: (message) => {
-                log.error(`[${section.toUpperCase()}][${name.toUpperCase()}] ${log.colorText("white", message)}`)
+                log.error(`[${section.toUpperCase()}][${name.toUpperCase()}] ${log.setColors(`$4${message}`)}`)
             }
         }
         let customRequire = (module) => { customConsole.error(`REQURING of '${module}' is not allowed`) }
