@@ -52,6 +52,13 @@ Observo.onCustomMount((imports) => {
             })
         }
     })
+    db.isRole("DEFAULT", (response) => {
+        if (!response) {
+            db.addRole("DEFAULT", "cyan", () => {
+                console.log("Added $3DEFAULT $frole")
+            })
+        }
+    })
 })
 
 let handler = {}
@@ -237,12 +244,13 @@ class Database {
             callback()
         })
     }
-    getRole(uuid, callback) {
-        let query = `SELECT * FROM roles WHERE (uuid="${uuid}")`
+    getRoles(callback) {
+        let query = `SELECT * FROM roles`
+        console.log(query)
         mainSQL.query(query, function (err, results, fields) {
             if (err) console.log(err)
             if (results.length > 0) {
-                callback(results[0])
+                callback(results)
             } else {
                 callback(null)
             }

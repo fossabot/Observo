@@ -70,8 +70,13 @@ export default class ProjectViewer extends Component {
         </Alert>
     }
     render() {
-        const renderRole = (role, color) => {
-            return <Tag style={{background: color, marginBottom: 10, margin: 3}}>{role}</Tag>
+        const renderRoles = (roles) => {
+            let items = []
+            for (let r in roles) {
+                let role = roles[r]
+                items.push(<Layout.Grid key={r}><Tag style={{ background: role.color, marginBottom: 10, margin: 3 }}>{role.name}</Tag></Layout.Grid>)
+            }
+            return items
         }
         return <Layout.Grid row id="container" style={{ justifyContent: 'flex-start', height: '100%' }}>
             <Layout.Grid col>
@@ -86,7 +91,15 @@ export default class ProjectViewer extends Component {
                             </Layout.Grid>
                             <Layout.Grid>
                                 <Card interactive={false} elevation={Elevation.TWO} style={{ margin: 10 }}>
-                                    <h2>{this.props.userData.name}<sup>{renderRole(this.props.userData.roleName, this.props.userData.roleColor)}</sup></h2>
+
+                                    <Layout.Grid row>
+                                        <Layout.Grid>
+                                            <h2>{this.props.userData.name}<sup></sup></h2>
+                                        </Layout.Grid>
+                                        <Layout.Grid col>
+                                            {renderRoles(this.props.userData.roles)}
+                                        </Layout.Grid>
+                                    </Layout.Grid>
                                 </Card>
                             </Layout.Grid>
                         </Layout.Grid>

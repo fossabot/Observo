@@ -68,11 +68,24 @@ Observo.onCustomMount((imports) => {
             })
             database.getUser(userUUID, (data) => {
                 console.log(JSON.stringify(data))
-                database.getRole(data.role, (role) => {
-                    console.log(JSON.stringify(role))
-                    client.emit("core_userData", {name: data.username, roleName: role.name, roleColor: role.color})
+                let userRoles = JSON.parse(data.role)
+
+                database.getRoles((roles) => {
+                    console.log("-----")
+                    console.log(JSON.stringify(roles))
+                    let roleData = []
+                    for (let i in userRoles) {
+                        let userRole = userRoles[i]
+                        for (let j in roles) {
+                            let role = roles[j]
+                            if (userRole == role.uuid) {
+                                roleData.push({name: role.name, uuid: role.uuid, color: role.color})
+                            }
+                        }
+                    }    
+                    client.emit("core_userData", {name: data.username, roles: roleData})
                 })
-               
+                
             })
          })
 

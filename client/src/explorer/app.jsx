@@ -64,8 +64,7 @@ export default class App extends Component {
                 name: null
             },
             userData: {
-                roleColor: "white",
-                roleName: "DEFAULT",
+                roles: [],
                 name: null
             }
         }
