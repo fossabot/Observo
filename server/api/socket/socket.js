@@ -10,11 +10,14 @@ const uuidv4 = require('uuid/v4'); //Random
 
 Observo.onCustomMount((imports) => {
     let database = imports.api.database.API.getManager()
-
+    let connectedClients = {}
     let socket = io.of("/core/").on('connection', function (client) {
         let sessionKey = uuidv4()
+        let vaildAuth = false
+        let userUUID = null
         console.log("$ENew Client: $f" + sessionKey)
         client.once('disconnect', function () {
+            console.log("")
             client.disconnect()
         })
         client.emit("auth_sessionKey", sessionKey)
@@ -35,7 +38,13 @@ Observo.onCustomMount((imports) => {
                             database.signIn(username, password, sessionKey, (response) => {
                                 console.log(JSON.stringify(response))
                                 if (response != null) {
-                                    socket.emit("auth_vaildSignin", { authKey: response.authKey, sessionKey: sessionKey, uuid: response.uuid })
+                                    if (connectedClients[response.uuid] != null) {
+                                        connectedClients[response.uuid].emit("auth_signInNewDevice")
+                                    }
+                                    vaildAuth = true
+                                    userUUID = response.uuid
+                                    client.emit("auth_vaildSignin", { authKey: response.authKey, sessionKey: sessionKey, uuid: response.uuid })
+                                    connectedClients[response.uuid] = client
                                 }
                             })
                         }
@@ -43,6 +52,29 @@ Observo.onCustomMount((imports) => {
                 }
             }
         })
+        client.on("core_projectList",  (data) => {
+            database.listProjects((projects) => {
+                let data = []
+                for (let p in projects) {
+                    let project = projects[p]
+                    let custom = {
+                        name: project.name,
+                        lastEdited: project.last_edited,
+                        plugins: null
+                    }
+                    data.push(custom)
+                }
+                client.emit("core_projectList", data)
+            })
+            database.getUser(userUUID, (data) => {
+                console.log(JSON.stringify(data))
+                database.getRole(data.role, (role) => {
+                    console.log(JSON.stringify(role))
+                    client.emit("core_userData", {name: data.username, roleName: role.name, roleColor: role.color})
+                })
+               
+            })
+         })
 
     })
 })

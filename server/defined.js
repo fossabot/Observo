@@ -1,317 +1,41 @@
-/** Defined 
- *  An API and plugin loading system designed for requireless projects
- */
-
 require("amd-loader");
-var EventEmitter = require('events').EventEmitter;
-const startTime = process.hrtime()
+var l=require('events').EventEmitter;
+const sT=process.hrtime()
 class Logging {
-    constructor() {
-        this.chrome = false
-        this.prefix = this.setColors("$3 Observo $f|")
-    }
-    setColors(data) {
-        let paint = (color, text) => {
-            switch (color) {
-                case '0'://black
-                    text = '\x1B[30m' + text; break;
-                case '4': //red
-                    text = '\x1B[31m' + text; break;
-                case '2': //green
-                    text = '\x1B[32m' + text; break;
-                case 'E': //yellow
-                    text = '\x1B[33m' + text; break;
-                case '1': //blue
-                    text = '\x1B[34m' + text; break;
-                case 'D': //magenta
-                    text = '\x1B[35m' + text; break;
-                case '3': //cyan
-                    text = '\x1B[36m' + text; break;
-                case 'f': //white
-                    text = '\x1B[37m' + text; break;
-                default:
-                    text = color + text; break;
-            }
-            return text + '\x1B[39m' + '\x1b[0m';
-        }
-        let output = ""
-        let painting = false
-        let grabColor = 0
-        let color = ""
-        let items = []
-        for (var i = 0; i < data.length; i++) {
-            if (data[i] == "$") {
-                if (painting) {
-                    if (output != "") {
-                        items.push(paint(color, output))
-                        painting = false
-                        output = ""
-                    }
-                }
-                grabColor = true
-                color = ""
-            }
-            if (grabColor) {
-                color = color + data[i]
-                if (color.length == 2) {
-                    grabColor = false
-                    painting = true
-                    color = color.replace("$", "")
-                }
-            } else {
-                output = output + data[i]
-            }
-        }
-        if (painting) {
-            items.push(paint(color, output))
-        }
-        output = ""
-        for (let i in items) {
-            output = output + items[i]
-        }
-        return output
-    }
-    log(message) { //2=green
-
-        message = `${this.prefix} ${this.setColors(`$2${message}`)}`
-        console.log(message)
-    }
-    info(message) {
-        message = `${this.prefix} ${this.setColors(`$3${message}`)}`
-        console.log(message)
-
-    }
-    error(message) {
-        message = `${this.prefix} ${this.colorText("red", message)}`
-        console.log(message)
-    }
+    constructor() {this.prefix=this.color('$3 Observo $f|')}
+    color(a){let b=(j, k) => {return k='0' === j ? '\x1B[30m' + k : '4' === j ? '\x1B[31m' + k : '2' === j ? '\x1B[32m' + k : 'E' === j ? '\x1B[33m' + k : '1' === j ? '\x1B[34m' + k : 'D' === j ? '\x1B[35m' + k : '3' === j ? '\x1B[36m' + k : 'f' === j ? '\x1B[37m' + k : j + k, k + '\x1B[39m\x1B[0m'},c='',d=!1,e=0,f='',g=[];for (var h=0; h < a.length; h++) '$' == a[h] && (d && '' != c && (g.push(b(f, c)), d=!1, c=''), e=!0, f=''), e ? (f += a[h], 2 == f.length && (e=!1, d=!0, f=f.replace('$', ''))) : c += a[h];for (let j in d && g.push(b(f, c)), c='', g) c += g[j];return c;}
+    log(a){a=`${this.prefix} ${this.color(`$2${a}`)}`, console.log(a)}
+    info(a){a=`${this.prefix} ${this.color(`$3${a}`)}`, console.log(a) }
+    error(a){a=`${this.prefix} ${this.color(`$4${a}`)}`, console.log(a)}
 }
-const log = new Logging()
-const getPackages = function (dir, filelist) {
-    var path = path || require('path');
-    var fs = fs || require('fs'),
-        files = fs.readdirSync(dir);
-    filelist = filelist || [];
-    files.forEach(function (file) {
-        if (fs.statSync(path.join(dir, file)).isDirectory()) {
-            filelist = getPackages(path.join(dir, file), filelist);
-        }
-        else {
-            if (file == "package.json") {
-                filelist.push(path.join(dir, file));
-            }
-        }
-    });
-    return filelist;
-};
-const splitAt = index => x => [x.slice(0, index), x.slice(index)]
+const log=new Logging()
+const getPackages=function(a,b){var c=c||require('path'),d=d||require('fs'),e=d.readdirSync(a);return b=b||[],e.forEach(function(f){d.statSync(c.join(a,f)).isDirectory()?b=getPackages(c.join(a,f),b):'package.json'==f&&b.push(c.join(a,f))}),b};
+const splitAt=index => x => [x.slice(0, index), x.slice(index)]
 var self
-class Manager extends EventEmitter {
-    constructor() {
-        super()
-        self = this
-        self.id = "defined"
-        this.defined = {}
-        this.pass = false
+class Z extends l {
+    constructor() {super();self=this;self.id="defined";this.d={};this.p=false;}
+    setDefinedID(id) {this.id=id}
+    appReady(a) {this.on("aR",()=>{log.info("Loaded in: $f"+(1e3*process.hrtime(sT)[0]+process.hrtime(sT)[1]/1e6).toFixed(3)+"ms"),a(log)})};
+    addDefined(a,b,c,d){if(a=a.toLowerCase(),null==self.d[a]){self.d[a]={},self.d[a].__CM=d;let e=require("path").join(__dirname,b),g=getPackages(e);for(let h in g){let i=g[h];define(function(j){i=i.replace(/\\/g,"/");let m=j(i);if(m.name&&m.version&&!self.d[a][m.name]){self.d[a][m.name]={},self.d[a][m.name].p=m,self.d[a][m.name].r=!1,self.d[a][m.name].s={},log.log("$DNEW MODULE: "+m.name);let n=splitAt(i.lastIndexOf("/"))(i)[0];if(m.main){let o=n+"/"+m.main;j("fs").readFile(o,"utf8",(p,q)=>{p&&console.log("Cannot load "+m.main+"!"),self.run(q,a,m.name,c)})}else console.log("Has no 'main' file?")}})}return self.d[a]}}
+    run(c, s, n, aR) {
+        let cC={log:a=>{log.log(`[${s.toUpperCase()}][${n.toUpperCase()}] ${log.color(`$f${a}`)}`)},info:a=>{log.info(`[${s.toUpperCase()}][${n.toUpperCase()}] ${log.color(`$3${a}`)}`)},error:a=>{log.error(`[${s.toUpperCase()}][${n.toUpperCase()}] ${log.color(`$4${a}`)}`)}};
+        let cR=(m)=>{cC.error(`REQURING of '${m}' is not allowed`)}
+        aR&&(cR=require);
+        var indexedDB=null;var location=null;var navigator=null;var onerror=null;var onmessage=null;var performance=null;var self=null;var webkitIndexedDB=null;var postMessage=null;var close=null;var openDatabase=null;var openDatabaseSync=null;var webkitRequestFileSystem=null;var webkitRequestFileSystemSync=null;var webkitResolveLocalFileSystemSyncURL=null;var webkitResolveLocalFileSystemURL=null;var addEventListener=null;var dispatchEvent=null;var removeEventListener=null;var dump=null;var onoffline=null;var ononline=null;var importScripts=null;var application=null;let global=null;let process=null;let exports=null;let __dirname=null;let __filename=null;
+        let run=null
+        let defined={register:(a,b)=>{this.d[s][n].s=b,this.d[s][n].r=!0,this.cM()},onCustomMount:a=>{this.on('mC',()=>{let b=this.getCS(s,n);a(b)})},onMount:a=>{const b=function(c,d){return Object.defineProperty(c,'name',{value:d,configurable:!0})};this.on('mI',()=>{let c=this.getGS(s,n);a=b(a,n),a(c)})},getPackage:()=>{return this.d[id][n].p}};
+        let id=this.id;let l=`module.exports=function(require,console,${id},log){${c}}`;self=null
+        let lC=eval(l);
+        lC(cR, cC, defined, null);
     }
-    setDefinedID(id) {
-        this.id = id
-    }
-    appReady(callback) {
-        this.on('app-ready', () => {
-            log.info("Succesfully loaded in: $f" +  ((process.hrtime(startTime)[0] * 1000) + (process.hrtime(startTime)[1] / 1000000)).toFixed(3) + "ms")
-            callback(log)
-        });
-    }
-    addDefined(section, path, allowRequire, customRegisters) {
-        section = section.toLowerCase()
-        if (self.defined[section] == null) {
-            self.defined[section] = {}
-            self.defined[section].__customRegisters = customRegisters
-            let root = require("path").join(__dirname, path)
-            let apis = getPackages(root)
-            for (let file in apis) {
-                let f = apis[file]
-                define(function (require, exports, module) {
-                    f = f.replace(/\\/g, "/");            
-                    let json = require(f)
-                    if (json.name && json.version) {
-                        if (!self.defined[section][json.name]) {
-                            self.defined[section][json.name] = {}
-                            self.defined[section][json.name].package = json
-                            self.defined[section][json.name].registered = false
-                            self.defined[section][json.name].services = {}
-                            log.log("$DNEW MODULE: " + json.name)
-                            let dir = splitAt(f.lastIndexOf("/"))(f)[0]
-                            if (json.main) {
-
-                                let main = dir + "/" + json.main
-                            
-                                require('fs').readFile(main, 'utf8', (err, data) => {
-                                    if (err) { console.log("[Defined] Cannot load " + json.main + "!") }
-                                    self.run(data, section, json.name, allowRequire)
-                                });
-                            } else {
-                                console.log("[Loader] Has no 'main' file?")
-                            }
-                        }
-                    }
-
-                });
-                
-            }
-            return self.defined[section]
-        }
-    }
-    run(code, section, name, allowRequire) {
-        let customConsole = {
-            log: (message) => {
-                log.log(`[${section.toUpperCase()}][${name.toUpperCase()}] ${log.setColors(`$f${message}`)}`)
-            },
-            info: (message) => {
-                log.info(`[${section.toUpperCase()}][${name.toUpperCase()}] ${log.setColors(`$3${message}`)}`)
-            },
-            error: (message) => {
-                log.error(`[${section.toUpperCase()}][${name.toUpperCase()}] ${log.setColors(`$4${message}`)}`)
-            }
-        }
-        let customRequire = (module) => { customConsole.error(`REQURING of '${module}' is not allowed`) }
-        if (allowRequire) {
-            customRequire = require
-        }
-        var indexedDB = null;
-        var location = null;
-        var navigator = null;
-        var onerror = null;
-        var onmessage = null;
-        var performance = null;
-        var self = null;
-        var webkitIndexedDB = null;
-        var postMessage = null;
-        var close = null;
-        var openDatabase = null;
-        var openDatabaseSync = null;
-        var webkitRequestFileSystem = null;
-        var webkitRequestFileSystemSync = null;
-        var webkitResolveLocalFileSystemSyncURL = null;
-        var webkitResolveLocalFileSystemURL = null;
-        var addEventListener = null;
-        var dispatchEvent = null;
-        var removeEventListener = null;
-        var dump = null;
-        var onoffline = null;
-        var ononline = null;
-        var importScripts = null;
-        var application = null;
-        let global = null
-        let process = null
-        let exports = null
-        let __dirname = null
-        let __filename = null
-        let run = null
-        let defined = {
-            register: (id, services) => {
-                this.defined[section][name].services = services
-                this.defined[section][name].registered = true
-              
-                this.checkMounting()
-            },
-            onCustomMount: (callback) => {
-                this.on('mount-custom', () => {
-                    let data = this.getCustomServices(section, name)
-                    callback(data)
-                });
-            },
-            onMount: (callback) => {
-                const nameFunction = function (fn, name) {
-                    return Object.defineProperty(fn, 'name', {value: name, configurable: true});
-                  };
-                this.on('mount-imports', () => {
-                    let data = this.getGlobalServices(section, name)
-                    callback = nameFunction(callback, name)
-                    callback(data)
-                });
-            },
-            getPackage: () => {
-                return this.defined[id][name].package
-            }
-        }
-        let id = this.id
-        let newCode = `module.exports = function(require, console, ${id}, log) { ${code} }`;
-        self = null
-        let launchCode = eval(newCode);
-
-        launchCode(customRequire, customConsole, defined, null);
-    }
-    checkMounting() {
-        let pass = true
-        for (let section in this.defined) {
-            for (let mod in this.defined[section]) {
-                try {
-                    if (this.defined[section][mod].registered == false) {
-                        pass = false
-                    }
-                } catch (e) {}
-            }
-        }
-        if (pass && !this.pass) {
-            this.pass = true
-            this.emit('mount-imports');
-            this.emit('mount-custom');
-            this.emit('app-ready')
-        }
-    }
-    getGlobalServices(section, name) {
-        if (this.defined[section][name].package.consumes) {
-            let consumes = this.defined[section][name].package.consumes
-            let imports = {}
-            for (let value in consumes) {
-                let mod = consumes[value].split(":")
-                let _section = mod[0]
-                let _name = mod[1]
-                if (this.defined[_section]) {
-                    imports[_section] = {}
-                    if (this.defined[_section][_name]) {
-                        imports[_section][_name] = this.defined[_section][_name].services.GLOBAL
-                    }
-                }
-            }
-            return imports
-        }
-        return null
-    }
-    getCustomServices(section, name) {
-        if (this.defined[section][name].package.consumes) {
-            let customImports = {}
-            let customRegisters = this.defined[section].__customRegisters
-            for (let _section in this.defined) {
-                customImports[_section] = {}
-                for (let _name in this.defined[_section]) {
-                    if (_name != "__customRegisters") {
-                        customImports[_section][_name] = {}
-                        for (let register in customRegisters) {
-                            let id = customRegisters[register]
-                            try {
-                                customImports[_section][_name][id] = this.defined[_section][_name].services[id]
-                            } catch (e) {
-                                console.log("[DML] Doesn't Support Custom Register (" + _section + ":" + _name + ")")
-                            }
-                        }
-                    }
-
-                }
-            }
-            return customImports
-        }
-        return null
-    }
+    cM(){var _this=this;let a=!0;for(let b in _this.d)for(let c in _this.d[b])try{!1==_this.d[b][c].r&&(a=!1)}catch(d){}a&&!_this.p&&(_this.p=!0,_this.emit('mI'),_this.emit('mC'),_this.emit('aR'))};
+    getGS(a,b){var _this=this;if(_this.d[a][b].p.consumes){let c=_this.d[a][b].p.consumes,d={};for(let e in c){let f=c[e].split(":"),g=f[0],h=f[1];_this.d[g]&&(d[g]={},_this.d[g][h]&&(d[g][h]=_this.d[g][h].s.GLOBAL))}return d}return null};
+    getCS(a,b){var _this=this;if(_this.d[a][b].p.consumes){let c={},d=_this.d[a].__CM;for(let f in _this.d)for(let g in c[f]={},_this.d[f])if("__CM"!=g)for(let h in c[f][g]={},d){let i=d[h];try{c[f][g][i]=_this.d[f][g].s[i]}catch(j){console.log("[DML] Doesn't Support Custom Register ("+f+":"+g+")")}}return c}return null};
 }
-
-let m = new Manager()
-
-function PluginManager() {}
-PluginManager.prototype.addDefined = function (id, path, allowRequire = null, customRegisters) {return m.addDefined.call(this, id, path, allowRequire, customRegisters);}
-PluginManager.prototype.onAppReady = function (callback) {m.appReady(callback)}
-PluginManager.prototype.mountAll = function () {m.checkMounting()}
-PluginManager.prototype.setDefinedID = function (id) {m.setDefinedID(id)}
-exports.PluginManager = PluginManager;
+let m=new Z()
+function A(){}
+A.prototype.addDefined=(id,path,aR=null,cM)=>{return m.addDefined.call(this,id,path,aR,cM);}
+A.prototype.onAppReady=(cb)=>{m.appReady(cb)}
+A.prototype.mountAll=()=>{m.cM()}
+A.prototype.setDefinedID=(id)=>{m.setDefinedID(id)}
+module.exports=A;

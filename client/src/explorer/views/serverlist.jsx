@@ -27,9 +27,9 @@ export default class ServerList extends Component {
     /**
      * ConnectToServer - When a server is selected this will trigger
      */
-    connectToServer(ip) {
+    connectToServer(ip, name) {
         if (this.props.onConnect) {
-            this.props.onConnect(ip)
+            this.props.onConnect(ip, name)
         }
         
     }
@@ -43,7 +43,7 @@ export default class ServerList extends Component {
             for (let server in servers) {
                 let s = servers[server]
                 items.push(
-                    <Layout.Grid key={s} height="50px" width="100%" style={{ borderBottom: "1px solid black", cursor: "pointer" }} onClick={this.connectToServer.bind(this, s.ip)} background="gray">
+                    <Layout.Grid key={s} height="50px" width="100%" style={{ borderBottom: "1px solid black", cursor: "pointer" }} onClick={this.connectToServer.bind(this, s.ip, s.name)} background="gray">
                         <p>{s.name}</p>
                         <p>{s.ip}</p>
                     </Layout.Grid>

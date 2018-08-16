@@ -1,6 +1,6 @@
-let plugin = require("./defined").PluginManager
+let DefinedManager = require("./defined")
 
-let manager = new plugin()
+let manager = new DefinedManager()
 manager.setDefinedID("Observo")
 manager.addDefined("API", "./api", true, ["API"])
 manager.addDefined("PLUGINS", "./plugins", false)

@@ -19,6 +19,7 @@ const sleep = (ms) => {
 }
 
 import ServerList from './views/serverlist.jsx'
+import ProjectViewer from './views/projectViewer.jsx'
 import Home from './views/home.jsx'
 import Loader from './views/loader.jsx'
 
@@ -56,7 +57,17 @@ export default class App extends Component {
             isSpinner: true,
             showSignInDialog: false,
             username: null,
-            password: null
+            password: null,
+            projects: [],
+            serverProperties: {
+                ip: null,
+                name: null
+            },
+            userData: {
+                roleColor: "white",
+                roleName: "DEFAULT",
+                name: null
+            }
         }
     }
     /**
@@ -143,7 +154,7 @@ export default class App extends Component {
 
     }
     /////////////////////////
-    async connectToServer(ip) {
+    async connectToServer(ip, name) {
         console.log("triggered")
         let self = this
         console.log(ip)
@@ -165,20 +176,48 @@ export default class App extends Component {
                 console.log(data)
                 self.setState({showSignInDialog: true})
             }) 
+            socketObject.on("auth_vaildSignin", (data) => {
+                console.log("Signned in")
+                self.setState({showSignInDialog: false})
+                self.moveTo(0,-1,0)
+                socketObject.emit("core_projectList")  
+            }) 
+            socketObject.on("auth_signInNewDevice", (data) => {
+                console.log("Signned in")
+                self.setState({showSignInDialog: false})
+                self.moveTo(-1,0,0)
+                AppToaster.show({ message: "Disconnected: Sign in from another device",  intent: Intent.WARNING, });
+                socketObject.close()
+            }) 
+            socketObject.on("core_projectList", (data) => {
+                console.log(data)
+                self.setState({projects: data})
+            })
+            socketObject.on("core_userData", (data) => {
+                console.log(data)
+                self.setState({userData: data})
+            })
             
         })
+        this.setState({serverProperties: {ip: ip, name: name}})
         this.socketObject = socketObject
     }
-    async authSignIn() {
+    authSignIn() {
         if (this.socketObject != null) {
-            this.socketObject.emit("auth_signIn", {username: this.state.username, password: this.state.password})
+            this.socketObject.emit("auth_signIn", {username: this.state.username, password: this.state.password})    
+        }
+    }
+    socketDisconnect () {
+        if (this.socketObject != null) {
+            this.socketObject.close() 
+            this.moveTo(-1,0,0) 
         }
     }
     toggleShowSignIn() {
         if (this.state.showSignInDialog == false) {
             this.setState({showSignInDialog: true})
         } else {
-            this.moveTo(-1,0,0)   
+            this.moveTo(-1, 0, 0);
             this.setState({showSignInDialog: false}) 
         }
         
@@ -234,7 +273,7 @@ export default class App extends Component {
                     <Layout.Grid row style={{ "justifyContent": "flex-start" }} ref="grid">
                         <Layout.Grid col>
                             <Layout.Grid width="888px" height="637px">
-                                <ServerList moveTo={this.moveTo.bind(this)} moveRight={this.moveRight.bind(this)} onConnect={(ip) => { this.moveTo(-1, -1, 0); this.connectToServer(ip) }} />
+                                <ServerList moveTo={this.moveTo.bind(this)} moveRight={this.moveRight.bind(this)} onConnect={(ip, name) => { this.moveTo(-1, -1, 0); this.connectToServer(ip, name) }} />
                             </Layout.Grid>
                             <Layout.Grid width="888px" height="637px">
                                 <Loader isSpinner={this.state.isSpinner} />
@@ -248,10 +287,10 @@ export default class App extends Component {
                                 <Home moveLeft={this.moveLeft.bind(this)} moveRight={this.moveRight.bind(this)} />
                             </Layout.Grid>
                             <Layout.Grid width="888px" height="637px">
-                                5
+                                <ProjectViewer projects={this.state.projects} userData={this.state.userData} serverProperties={this.state.serverProperties} socketDisconnect={this.socketDisconnect.bind(this)}/>
                             </Layout.Grid>
                             <Layout.Grid width="888px" height="637px">
-                                8
+                              8
                             </Layout.Grid>
                         </Layout.Grid>
                         <Layout.Grid>

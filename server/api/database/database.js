@@ -31,7 +31,7 @@ const connect = (database = null) => {
 let mainSQL = connect("data")
 console.log("Connecting to Main DB")
 //Plugin is ready to be used
-Observo.onMount((imports) => {
+Observo.onCustomMount((imports) => {
     console.log("Loaded Databases")
     var sql = "CREATE TABLE IF NOT EXISTS `users` ( `id` int(11) NOT NULL AUTO_INCREMENT,`uuid` varchar(100) NOT NULL,`sessionKey` varchar(100) NOT NULL,`authKey` varchar(100) NOT NULL,`username` varchar(100) NOT NULL,`password` varchar(100) NOT NULL,`role` int(11) NOT NULL,`permissions` text NOT NULL,`avatar` text NOT NULL,`color` varchar(6) NOT NULL,PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=latin1";
     //Lets query the SQL for the USERS table above
@@ -43,7 +43,15 @@ Observo.onMount((imports) => {
     mainSQL.query(sql, function (err, result) {
         if (err) throw err;
     });
-
+    let db = imports.api.database.API.getManager()
+    console.log(JSON.stringify(db))
+    db.isRole("MASTER", (response) => {
+        if (!response) {
+            db.addRole("MASTER", "red", () => {
+                console.log("Added $4MASTER $frole")
+            })
+        }
+    })
 })
 
 let handler = {}
@@ -151,6 +159,16 @@ class Database {
         let authKey = this.newAuthKey(uuid)
         return authKey
     }
+    getUser(uuid, callback) {
+        mainSQL.query(`SELECT * FROM users WHERE (uuid="${uuid}")`, function (err, results, fields) {
+            if (err) console.log(err)
+            if (results.length > 0) {
+                callback(results[0])
+            } else {
+                callback(null)
+            }
+        });
+    }
     /**
      * UpdateSessionKey - Updates the sessionKey of a user based on the UUID
      * @param {UUID} sessionKey 
@@ -196,6 +214,37 @@ class Database {
                 }
             } else {
                 callback(false)
+            }
+        })
+    }
+    isRole(name, callback) {
+        let query = `SELECT * FROM roles WHERE (name="${name}")`
+       
+        mainSQL.query(query, function (err, results, fields) {
+            if (err) console.log(err)
+            if (results.length > 0) {
+                callback(true)
+            } else {
+                callback(false)
+            }
+        })
+    }
+    addRole(name, color, callback) {
+        let uuid = uuidv4();
+        let query = `INSERT INTO roles (uuid, name, color, permissions) VALUES ('${uuid}', '${name}', '${color}', '{}')`
+        mainSQL.query(query, function (err, results, fields) {
+            if (err) console.log(err)
+            callback()
+        })
+    }
+    getRole(uuid, callback) {
+        let query = `SELECT * FROM roles WHERE (uuid="${uuid}")`
+        mainSQL.query(query, function (err, results, fields) {
+            if (err) console.log(err)
+            if (results.length > 0) {
+                callback(results[0])
+            } else {
+                callback(null)
             }
         })
     }

@@ -24,6 +24,18 @@
 @light-aqua: #99ceec;
 @dark-aqua: #6eb9e4;
 @darker-aqua: #cccccc;
+.observo--sidebar {
+    background: @lightgray;
+     ::-webkit-scrollbar-thumb {
+        background-color: darken(@aqua, 20%);
+    }
+    .box {
+        background: @light-aqua
+    }
+    .box:hover {
+        background: darken(@light-aqua, 10%)
+    }
+}
 @keyframes fade {
     from {        
         opacity: 0;

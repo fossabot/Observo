@@ -26,7 +26,7 @@ export default class Home extends Component {
     }
     render() {
         return <Layout.Grid row style={{ justifyContent: 'flex-start', height: '100%' }}>
-            <Overlay isOpen={this.state.isHelpOpen} style={{ top: 10 }}>
+            <Overlay isOpen={this.state.isHelpOpen} style={{ top: 10 }} onClose={this.openHelp.bind(this)}>
 
                 <Layout.Grid height="200px" width="100%" background="white" className={Classes.ELEVATION_4} >
                     Thanks for using observo!

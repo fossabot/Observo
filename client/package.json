@@ -41,6 +41,7 @@
     "electron-prebuilt-compile": "^2.0.6",
     "extract-text-webpack-plugin": "^4.0.0-beta.0",
     "less": "^3.0.4",
+    "moment": "^2.22.2",
     "react-draggable": "^3.0.5",
     "react-hot-loader": "^4.3.3",
     "react-monaco-editor": "^0.17.2",
