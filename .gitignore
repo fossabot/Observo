@@ -5,4 +5,4 @@
 /server/package-lock.json
 /node_modules/
 /_test/
-/_test/package-lock.json
+_test/package-lock.json

@@ -52,7 +52,7 @@ class Database {
 
     }
     isUser(username, callback) {
-        mainsql.query(`SELECT * FROM users WHERE (username="${username}")`, function (err, results, fields) {
+        mainSQL.query(`SELECT * FROM users WHERE (username="${username}")`, function (err, results, fields) {
             if (err) console.log(err)
             if (results.length > 0) {
                 callback(true)
@@ -62,7 +62,7 @@ class Database {
         });
     }
     isUserByID(uuid, callback) {
-        mainsql.query(`SELECT * FROM users WHERE (uuid="${uuid}")`, function (err, results, fields) {
+        mainSQL.query(`SELECT * FROM users WHERE (uuid="${uuid}")`, function (err, results, fields) {
             if (err) console.log(err)
             if (results.length > 0) {
                 callback(true)
@@ -71,9 +71,15 @@ class Database {
             }
         });
     }
+    /**
+     * VailidateUser - Check a user based on given UUID and sessionKey
+     * @param {UUID} uuid 
+     * @param {UUID} sessionKey 
+     * @param {Function} callback 
+     */
     vailidateUser(uuid, sessionKey, callback) {
         console.log("VAILIDATING")
-        mainsql.query(`SELECT * FROM users WHERE (uuid="${uuid}" AND sessionKey="${sessionKey}")`, function (err, results, fields) {
+        mainSQL.query(`SELECT * FROM users WHERE (uuid="${uuid}" AND sessionKey="${sessionKey}")`, function (err, results, fields) {
             if (err) console.log(err)
             if (results.length > 0) {
                 callback(true)
@@ -82,11 +88,21 @@ class Database {
             }
         });
     }
+    /**
+     * SignIn - Signs in a user by two ways:
+     *  - Either a user can send over its USERNAME and PASSWORD (session key is added by the callback)
+     *  - OR they can just give the authKey (if vaild), and that will return a new authKey
+     * @param {String} username 
+     * @param {String} password 
+     * @param {UUID} sessionKey 
+     * @param {Function} callback 
+     * @param {UUID} authKey 
+     */
     signIn(username, password, sessionKey, callback, authKey = null) {
         let me = this
         let output = null
         if (authKey != null) {
-            mainsql.query(`SELECT * FROM users WHERE (authKey="${authKey}")`, function (err, results, fields) {
+            mainSQL.query(`SELECT * FROM users WHERE (authKey="${authKey}")`, function (err, results, fields) {
                 if (err) console.log(err)
                 if (results.length > 0) {
                     me.updateSessionKey(sessionKey, results[0].uuid)
@@ -101,8 +117,8 @@ class Database {
                 }
             })
         } else {
-            password = this.md5(password)
-            mainsql.query(`SELECT * FROM users WHERE (username="${username}") AND (password="${password}") `, function (err, results, fields) {
+            password = md5(password)
+            mainSQL.query(`SELECT * FROM users WHERE (username="${username}") AND (password="${password}") `, function (err, results, fields) {
                 if (err) console.log(err)
                 if (results.length > 0) {
                     me.updateSessionKey(sessionKey, results[0].uuid)
@@ -119,11 +135,11 @@ class Database {
         }
     }
     addUser(username, password, sessionKey) {
-        let uuid = this.uuidv4() //Get a UUID
-        password = this.md5(password)
+        let uuid = uuidv4() //Get a UUID
+        password = md5(password)
         let query = `INSERT INTO users (id, uuid, sessionKey, authKey, username, password, role, permissions, avatar, color) VALUES (NULL, '${uuid}', '${sessionKey}', '-', '${username}', '${password}', '0', '-', '-', 'black')`
         console.log(query)
-        mainsql.query(query, function (err, results, fields) {
+        mainSQL.query(query, function (err, results, fields) {
             if (err) console.log(err)
         })
         let authKey = this.newAuthKey(uuid)
@@ -131,23 +147,23 @@ class Database {
     }
     updateSessionKey(sessionKey, uuid) {
         let query = `UPDATE users SET sessionKey = '${sessionKey}' WHERE uuid = '${uuid}'`
-        mainsql.query(query, function (err, results, fields) {
+        mainSQL.query(query, function (err, results, fields) {
             if (err) console.log(err)
         })
     }
     newAuthKey(uuid) {
-        let authKey = this.uuidv4();
+        let authKey = uuidv4();
         let query = `UPDATE users SET authKey = '${authKey}' WHERE uuid = '${uuid}'`
-        mainsql.query(query, function (err, results, fields) {
+        mainSQL.query(query, function (err, results, fields) {
             if (err) console.log(err)
         })
         return authKey
     }
     hasRole(uuid, role, callback) {
-        let authKey = this.uuidv4();
+        let authKey = uuidv4();
         let query = `SELECT * FROM users WHERE (uuid="${uuid}")`
         console.log(query)
-        mainsql.query(query, function (err, results, fields) {
+        mainSQL.query(query, function (err, results, fields) {
             if (err) console.log(err)
             if (results.length > 0) {
                 if (results[0].role >= role) {
@@ -163,7 +179,7 @@ class Database {
         })
     }
     getNameByUUID(uuid, callback) {
-        mainsql.query(`SELECT * FROM users WHERE (uuid="${uuid}")`, function (err, results, fields) {
+        mainSQL.query(`SELECT * FROM users WHERE (uuid="${uuid}")`, function (err, results, fields) {
             if (err) console.log(err)
             if (results.length > 0) {
                 console.print(results)
@@ -191,7 +207,7 @@ class Database {
             if (!state) {
                 let query = `INSERT INTO projects (preset, name, user_uuid, created, last_edited, archived) VALUES ('${preset}', '${projectName}', '${uuid}', CURRENT_TIME(), CURRENT_TIME(), '0')`
                 console.log(query)
-                mainsql.query(query, function (err, results, fields) {
+                mainSQL.query(query, function (err, results, fields) {
                     if (err) console.log(err)
                 })
                 let replaceAll = function (str, find, replace) {
@@ -213,7 +229,7 @@ class Database {
 
     listProjects(callback) {
         let query = `SELECT * FROM projects`
-        mainsql.query(query, function (err, results, fields) {
+        mainSQL.query(query, function (err, results, fields) {
             if (err) console.log(err)
             if (results.length > 0) {
                 callback(results)
@@ -224,7 +240,7 @@ class Database {
     }
     isProject(projectName, callback) {
         let query = `SELECT * FROM projects WHERE (name="${projectName}")`
-        mainsql.query(query, function (err, results, fields) {
+        mainSQL.query(query, function (err, results, fields) {
             if (err) console.log(err)
             if (results.length > 0) {
                 callback(true)

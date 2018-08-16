@@ -204,10 +204,10 @@ export default class App extends Component {
                         </Layout.Grid>
                         <Layout.Grid col>
                             <Layout.Grid>
-                                <InputGroup leftIcon="user" />
+                                <InputGroup onInput={(event) => {this.setState({username: event.target.value})}} leftIcon="user" />
                             </Layout.Grid>
                             <Layout.Grid style={{paddingTop: 5}}>
-                                <InputGroup onInput={(event) => {console.log(event.target.value)}}leftIcon="password" />
+                                <InputGroup onInput={(event) => {this.setState({password: event.target.value})}} leftIcon="password" />
                             </Layout.Grid>
                         </Layout.Grid>
                     </Layout.Grid>
@@ -218,7 +218,8 @@ export default class App extends Component {
             <div className="pt-dialog-footer-actions">
                 <Button
                     intent={Intent.SUCCESS}
-                    text="Add"
+                    text="Sign In"
+                    onClick={this.authSignIn.bind(this)}
                 />
             </div>
         </div>
