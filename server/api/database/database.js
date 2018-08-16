@@ -134,6 +134,12 @@ class Database {
             })
         }
     }
+    /**
+     * AddUser - Adds a user to the database
+     * @param {String} username 
+     * @param {String} password 
+     * @param {UUID} sessionKey 
+     */
     addUser(username, password, sessionKey) {
         let uuid = uuidv4() //Get a UUID
         password = md5(password)
@@ -145,12 +151,21 @@ class Database {
         let authKey = this.newAuthKey(uuid)
         return authKey
     }
+    /**
+     * UpdateSessionKey - Updates the sessionKey of a user based on the UUID
+     * @param {UUID} sessionKey 
+     * @param {UUID} uuid 
+     */
     updateSessionKey(sessionKey, uuid) {
         let query = `UPDATE users SET sessionKey = '${sessionKey}' WHERE uuid = '${uuid}'`
         mainSQL.query(query, function (err, results, fields) {
             if (err) console.log(err)
         })
     }
+    /**
+     * NewAuthKey - Generates a brand new authKey for a user based on the UUID
+     * @param {UUID} uuid 
+     */
     newAuthKey(uuid) {
         let authKey = uuidv4();
         let query = `UPDATE users SET authKey = '${authKey}' WHERE uuid = '${uuid}'`
@@ -159,6 +174,12 @@ class Database {
         })
         return authKey
     }
+    /**
+     * TODO: Redo Role System
+     * @param {UUID} uuid 
+     * @param {String} role 
+     * @param {Function} callback 
+     */
     hasRole(uuid, role, callback) {
         let authKey = uuidv4();
         let query = `SELECT * FROM users WHERE (uuid="${uuid}")`
@@ -178,6 +199,11 @@ class Database {
             }
         })
     }
+    /**
+     * GetNameByUUID - Gets a users "name" based on the UUID
+     * @param {UUID} uuid 
+     * @param {Function} callback 
+     */
     getNameByUUID(uuid, callback) {
         mainSQL.query(`SELECT * FROM users WHERE (uuid="${uuid}")`, function (err, results, fields) {
             if (err) console.log(err)
@@ -198,7 +224,7 @@ class Database {
      * 
      * @param {String} projectName 
      * @param {String} uuid 
-     * @param {String} preset 
+     * @param {String} TODO: Plugins not preset 
      */
     addProject(projectName, uuid, preset, callback) {
         //Check first if this project name is avalable
@@ -226,7 +252,10 @@ class Database {
             }
         })
     }
-
+    /**
+     * ListProjects - Lists all projects on the SERVER
+     * @param {Function} callback 
+     */
     listProjects(callback) {
         let query = `SELECT * FROM projects`
         mainSQL.query(query, function (err, results, fields) {
