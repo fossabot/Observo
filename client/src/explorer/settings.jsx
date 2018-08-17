@@ -12,9 +12,10 @@ export default class Settings extends Component {
             selectedView: null
         }
     }
-    componentWillReceiveProps() {
-
-    }
+    /**
+     * componentDidMount
+     * - Render the selected view on mount
+     */
     componentDidMount() {
         for (let item in this.props.settings) {
             let i = this.props.settings[item]
@@ -27,9 +28,11 @@ export default class Settings extends Component {
     switchView(name) {
         this.setState({ selectedView: name })
     }
-    renderSectionList() {
+    /**
+     * renderCategoryList - Renders all categories in the sidebar
+     */
+    renderCategoryList() {
         let items = []
-
         for (let item in this.state.localSettings) {
             let i = this.state.localSettings[item]
             let styleText = { paddingLeft: 10, marginTop: 5, fontSize: 30 }
@@ -51,14 +54,17 @@ export default class Settings extends Component {
         }
         return items
     }
+    /**
+     * UpdateDropDown - Updates the drop down by checking name, and making its selected, and everything else not selected
+     * @param {Object} data The data tree passed down {category, section, object}
+     * @param {String} name Name of the MenuItem in the Menu 
+     */
     updateDropdown(data, name) {
-        console.log("loop")
         let copy = this.state.localSettings
-        console.log(copy[data.category].sections)
         for (let object in copy[data.category].sections) {
-            if (copy[data.category].sections[object].id == data.section) {
+            if (object == data.section) {
                 for (let s in copy[data.category].sections[object].list) {
-                    if (copy[data.category].sections[object].list[s].id == data.object) {
+                    if (s == data.object) {
                         for (let t in copy[data.category].sections[object].list[s].options) {
                             if (copy[data.category].sections[object].list[s].options !== "undefined") {
                                 if (copy[data.category].sections[object].list[s].options[t].text == name) {
@@ -75,23 +81,35 @@ export default class Settings extends Component {
         }
         this.setState({ localSettings: copy })
     }
+    /**
+     * updateSwitch - When switch is activated, update the state of the switch, globally
+     * @param {Object} data The data tree passed down {category, section, object}
+     * @param {Boolean} boolean State of the switch
+     */
     updateSwitch(data, boolean) {
-        console.log(boolean)
-        console.log("loop")
         let copy = this.state.localSettings
-        console.log(copy[data.category].sections)
-        for (let object in copy[data.category].sections) {
-            if (copy[data.category].sections[object].id == data.section) {
-                for (let s in copy[data.category].sections[object].list) {
-                    if (copy[data.category].sections[object].list[s].id == data.object) { 
-                        copy[data.category].sections[object].list[s].options.selected = !boolean
+        for (let section in copy[data.category].sections) {
+            if (section == data.section) {
+                for (let object in copy[data.category].sections[section].list) {
+                    if (object == data.object) { 
+                        copy[data.category].sections[section].list[object].options.selected = !boolean
                     }
                 }
             }
         }
         this.setState({ localSettings: copy })
     }
-    renderSectionArea() {
+    /**
+     * RenderViewArea - Renders the views; Only renders the 'selected' view
+     */
+    renderViewArea() {
+        /**
+         * 
+         * @param {String} key Identifier of the object
+         * @param {Object} boolean State of the switch (boolean.selected)
+         * @param {Stirng} text Text to display
+         * @param {Object} data The data tree passed down {category, section, object}
+         */
         let renderSwitch = (key, boolean, text, data) => {
             return <Layout.Grid key={"observoSettingSwitch" + key} height="30px" style={{ marginTop: 5 }}>
                 <Layout.Box>
@@ -99,10 +117,26 @@ export default class Settings extends Component {
                 </Layout.Box>
             </Layout.Grid>
         }
+        /**
+         * RenderTitle - Renders title for a section
+         * @param {String} key Identifier of the object 
+         * @param {String} title The title of the section
+         */
         let renderTitle = (key, title) => {
             return <Layout.Grid key={key} height="50px" style={{ borderBottom: "1px solid black" }}> <p style={{ paddingLeft: 10, marginTop: 5, fontSize: 30 }} >{title}</p></Layout.Grid>
         }
+        /**
+         * RenderDropdown - Renders a dropdown based on the passed parameters based on the settings JSON
+         * @param {String} key Identifier of the object
+         * @param {Array} options Array of options to select from
+         * @param {String} text Display text for the object
+         * @param {Object} data The data tree passed down {category, section, object}
+         */
         let renderDropdown = (key, options, text, data) => {
+            /**
+             * Renders the MenuItems for the Menu
+             * @param {Items} z Options passed down by the function
+             */
             let getMenu = (z) => {
                 let opts = []
                 for (let o in z) {
@@ -124,6 +158,10 @@ export default class Settings extends Component {
                 }
                 return <Menu>{opts}</Menu>
             }
+            /**
+             * GetSelected - Render the VALUE of the button (which is selected)
+             * @param {Object} z Options passed down by the function
+             */
             let getSelected = (z) => {
                 for (let o in z) {
                     let a = z[o]
@@ -137,7 +175,7 @@ export default class Settings extends Component {
                 }
             }
 
-
+            //Render it
             return <Layout.Grid key={key} height="30px" style={{ marginTop: 5 }}>
                 <Layout.Box>
                     <p style={{ paddingLeft: 10, marginTop: 5, fontSize: 20 }} >{text}: </p>
@@ -147,43 +185,51 @@ export default class Settings extends Component {
                 </Layout.Box>
             </Layout.Grid>
         }
-
+        //Local variables state
         let items = []
-        for (let item in this.state.localSettings) {
+        for (let item in this.state.localSettings) { //CATEGORY
             let i = this.state.localSettings[item]
             if (item == this.state.selectedView) {
-                for (let sec in i.sections) {
+                for (let sec in i.sections) { //SECTIONS
                     let section = i.sections[sec]
-                    console.log(i.sections[sec])
-                    items.push(renderTitle(section.id, section.display))
-                    for (let o in section.list) {
+                    items.push(renderTitle(sec, section.display)) //SECTION TITLE
+                    for (let o in section.list) { //LIST OF OBJECTS (for that section)
                         let object = section.list[o]
-                        if (object.type != null && object.options != null) {
-                            let data = { category: item, section: section.id, object: object.id }
-                            if (object.type == "DROPDOWN") {
-
-                                items.push(renderDropdown(object.id, object.options, object.display, data))
+                        if (object.type != null && object.options != null) { //CHECK IF NOT NULL
+                            let data = { category: item, section: sec, object: o } //SUPPLY DATA TREE (for trace back)
+                            if (object.type == "DROPDOWN") { //IDENTIFY TYPE
+                                items.push(renderDropdown(o, object.options, object.display, data))
                             }
-                            if (object.type == "TOGGLE") {
-                                items.push(renderSwitch(object.id, object.options, object.display, data))
+                            if (object.type == "TOGGLE") { //IDENTIFY TYPE
+                                items.push(renderSwitch(o, object.options, object.display, data))
                             }
                         }
                     }
                 }
             }
         }
+        //RENDER THE VIEW
         return items
     }
+    /**
+     * SaveHandler - When save button is clicked
+     */
     saveHandler() {
         if (this.props.onSave) {
             this.props.onSave()
         }
     }
+    /**
+     * CancelHandeler - When cancel button is clicked
+     */
     cancelHandler() {
         if (this.props.onCancel) {
             this.props.onCancel()
         }
     }
+    /**
+     * Render 
+     */
     render() {
         return <Overlay
             icon="cog"
@@ -216,11 +262,11 @@ export default class Settings extends Component {
 
                     <Layout.Grid row>
                         <Layout.Grid col width="200px">
-                            {this.renderSectionList()}
+                            {this.renderCategoryList()}
                         </Layout.Grid>
                         <Layout.Grid width="10px" height="100%" background="white" style={{ borderLeft: "3px solid white" }}> </Layout.Grid>
                         <Layout.Grid col height="100%" width="100%" style={{ overflowY: "auto", overflow: "overlay" }}>
-                            {this.renderSectionArea()}
+                            {this.renderViewArea()}
                         </Layout.Grid>
                     </Layout.Grid>
                 </Layout.Grid>

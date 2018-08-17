@@ -20,46 +20,42 @@ export default class Home extends Component {
                     display: "General",
                     icon: "layers",
                     selected: true,
-                    sections: [
-                        {
-                            id: "options",
-                            display: "Options",
-                            list: [
-                                {
-                                    id:  "select-opts",
+                    sections: {
+                        select: {
+                            display: "General",
+                            list: {
+                                selectOpts:{
                                     display: "Select Options",
                                     type: "DROPDOWN",
                                     options: [
-                                        {icon: "grid", text: "Grid", selected: true},
-                                        {icon: "edit", text: "Edit"},
-                                        {icon: "download", text: "Download"},
-                                        {icon: "lock", text: "Lock"}
+                                        { icon: "grid", text: "Grid", selected: true },
+                                        { icon: "edit", text: "Edit" },
+                                        { icon: "download", text: "Download" },
+                                        { icon: "lock", text: "Lock" }
                                     ]
                                 }
-                            ]
+                            }
                         }
-                    ]
+                    }
                 },
                 updates: {
                     display: "Updates",
                     icon: "automatic-updates",
                     selected: false,
-                    sections: [
-                        {
-                            id: "updating",
-                            display: "Updating",
-                            list: [
-                                {
-                                    id:  "auto-update",
-                                    display: "Enable Automatic Updates",
+                    sections: {
+                        main: {
+                            display: "Updates",
+                            list: {
+                                selectOpts:{
+                                    display: "Automatically Update:",
                                     type: "TOGGLE",
                                     options: {
-                                        selected: false
+                                        selected: true
                                     }
                                 }
-                            ]
+                            }
                         }
-                    ]
+                    }
                 }
             }
         }
@@ -83,10 +79,10 @@ export default class Home extends Component {
     }
     render() {
         return <Layout.Grid row style={{ justifyContent: 'flex-start', height: '100%' }}>
-            <Settings 
-            isOpen={this.state.isSettingsOpen} 
-            onCancel={this.openSettings.bind(this)}
-            settings={this.state.settings}
+            <Settings
+                isOpen={this.state.isSettingsOpen}
+                onCancel={this.openSettings.bind(this)}
+                settings={this.state.settings}
             />
             <Overlay isOpen={this.state.isHelpOpen} style={{ top: 10 }} onClose={this.openHelp.bind(this)}>
 
@@ -120,7 +116,7 @@ export default class Home extends Component {
                             </Layout.Grid>
                             <Layout.Grid>
                                 <Layout.Grid row center >
-                                    <Button style={{ width: 200, height: 100 }} id="projects" onClick={() => { AppToaster.show({ icon: "info-sign", message: "Local projects coming soon!",  intent: Intent.PRIMARY, }); }}>
+                                    <Button style={{ width: 200, height: 100 }} id="projects" onClick={() => { AppToaster.show({ icon: "info-sign", message: "Local projects coming soon!", intent: Intent.PRIMARY, }); }}>
                                         <Layout.Box>
                                             <Icon icon="folder-open" style={{ width: 30, height: 30 }} />
                                             <h3 style={{ paddingLeft: 10 }}>PROJECTS</h3>
