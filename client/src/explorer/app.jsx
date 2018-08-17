@@ -18,7 +18,7 @@ const sleep = (ms) => {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-import ServerList from './views/serverlist.jsx'
+import ServerList from './views/serverList.jsx'
 import ProjectViewer from './views/projectViewer.jsx'
 import Home from './views/home.jsx'
 import Loader from './views/loader.jsx'
@@ -75,6 +75,19 @@ export default class App extends Component {
     componentDidMount() {
         //Update the location of the view when loaded (HOME VIEW)
         this.moveTo(0, 0, 0)
+        let self = this
+        hotkeys('down', function(event, handler){
+            self.moveDown();
+        });
+        hotkeys('up', function(event, handler){
+            self.moveUp();
+        });
+        hotkeys('left', function(event, handler){
+            self.moveLeft();
+        });
+        hotkeys('right', function(event, handler){
+            self.moveRight();
+        });
     }
     updatePosition(x, y, time) {
         //Update Position
@@ -185,7 +198,7 @@ export default class App extends Component {
                 console.log("Signned in")
                 self.setState({showSignInDialog: false})
                 self.moveTo(-1,0,0)
-                AppToaster.show({ message: "Disconnected: Sign in from another device",  intent: Intent.WARNING, });
+                AppToaster.show({ icon: "info-sign", message: "Disconnected: Sign in from another device",  intent: Intent.WARNING, });
                 socketObject.close()
             }) 
             socketObject.on("core_projectList", (data) => {
@@ -272,7 +285,7 @@ export default class App extends Component {
                     <Layout.Grid row style={{ "justifyContent": "flex-start" }} ref="grid">
                         <Layout.Grid col>
                             <Layout.Grid width="888px" height="637px">
-                                <ServerList moveTo={this.moveTo.bind(this)} moveRight={this.moveRight.bind(this)} onConnect={(ip, name) => { this.moveTo(-1, -1, 0); this.connectToServer(ip, name) }} />
+                                <ServerList moveTo={this.moveTo.bind(this)} moveRight={this.moveRight.bind(this)} onDisconnect={() =>{this.socketObject.close()}} onConnect={(ip, name) => { this.moveTo(-1, -1, 0); this.connectToServer(ip, name) }} />
                             </Layout.Grid>
                             <Layout.Grid width="888px" height="637px">
                                 <Loader isSpinner={this.state.isSpinner} />

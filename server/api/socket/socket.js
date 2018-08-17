@@ -17,7 +17,7 @@ Observo.onCustomMount((imports) => {
         let userUUID = null
         console.log("$ENew Client: $f" + sessionKey)
         client.once('disconnect', function () {
-            console.log("")
+            console.log("$DClient Disconnected: $f" + sessionKey)
             client.disconnect()
         })
         client.emit("auth_sessionKey", sessionKey)

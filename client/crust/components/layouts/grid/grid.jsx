@@ -6,6 +6,7 @@ import './grid.less'
 import classNames from 'classnames'
 
 export default class Grid extends Component {
+   
     render() {
         let id = ""
         let gridClass = classNames({
@@ -36,7 +37,7 @@ export default class Grid extends Component {
             _id = this.props.id
         }
         return (
-            <div ref={this.props.gridRef} data-id={_id} className={classNames(gridClass, this.props.className)} id={id} style={{...gridStyle, ...this.props.style}} onClick={this.props.onClick}>{this.props.children}</div>
+            <div ref={this.props.gridRef} data-id={_id} className={classNames(gridClass, this.props.className)} id={id} style={{...gridStyle, ...this.props.style}} onClick={this.props.onClick} onContextMenu={this.props.onContextMenu}>{this.props.children}</div>
         )
     }
 }

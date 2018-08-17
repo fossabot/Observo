@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
-import { Button, Intent, Spinner, Tree, ITreeNode, Tooltip, Icon, ProgressBar, Navbar, Dialog, Alignment, ButtonGroup, Menu, MenuItem, Classes, Collapse, Overlay, Position, InputGroup } from "@blueprintjs/core";
+import { Button, Intent, Spinner, Tree, ITreeNode, Tooltip, Icon, ProgressBar, Navbar, Dialog, Alignment, ButtonGroup, ContextMenu, Menu, MenuItem, Classes, Collapse, Overlay, Position, InputGroup } from "@blueprintjs/core";
 import { Layout } from "crust"
 import classNames from 'classnames'
 import hotkeys from 'hotkeys-js';
 import io from 'socket.io-client';
+import { constants } from 'os';
 require("babel-polyfill")
 
 export default class ServerList extends Component {
@@ -23,6 +24,9 @@ export default class ServerList extends Component {
         } else {
             this.setState({ addSeverDialog: false })
         }
+        if (this.props.onDisconnect) {
+            this.props.onDisconnect()
+        }
     }
     /**
      * ConnectToServer - When a server is selected this will trigger
@@ -31,19 +35,29 @@ export default class ServerList extends Component {
         if (this.props.onConnect) {
             this.props.onConnect(ip, name)
         }
-        
+
+    }
+    showContext(event) {
+        const menu = <Menu>
+            <MenuItem icon="edit" text="Edit" />
+            <MenuItem icon="trash" text="Delete" />
+        </Menu>
+        ContextMenu.show(menu, { left: event.clientX, top: event.clientY }, () => {
+            // menu was closed; callback optional
+        });
     }
     /**
      * RenderServers - Renders all servers listed on the sidebar
      */
     renderServers() {
+
         if (stash.has('serverList')) {
             let servers = stash.get('serverList')
             let items = []
             for (let server in servers) {
                 let s = servers[server]
                 items.push(
-                    <Layout.Grid key={s} height="50px" width="100%" style={{ borderBottom: "1px solid black", cursor: "pointer" }} onClick={this.connectToServer.bind(this, s.ip, s.name)} background="gray">
+                    <Layout.Grid key={s} height="50px" width="100%" style={{ borderBottom: "1px solid black", cursor: "pointer" }} onClick={this.connectToServer.bind(this, s.ip, s.name)} onContextMenu={(this.showContext.bind(this))} background="gray">
                         <p>{s.name}</p>
                         <p>{s.ip}</p>
                     </Layout.Grid>

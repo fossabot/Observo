@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Button, Card, Intent, Icon, Dialog, Alignment, Tag, Tooltip, ButtonGroup, Classes, Collapse, Overlay, Position, InputGroup, Alert, Elevation } from "@blueprintjs/core";
+import { Button, Card, Intent, Icon, Dialog, Alignment, Tag, Tooltip, ButtonGroup, ContextMenu, Menu, MenuItem, Classes, Collapse, Overlay, Position, InputGroup, Alert, Elevation } from "@blueprintjs/core";
 import { Layout } from "crust"
 import classNames from 'classnames'
 import hotkeys from 'hotkeys-js';
@@ -25,12 +25,14 @@ export default class ProjectViewer extends Component {
             this.setState({ alertDisconnect: false })
         }
     }
-    /**
-     * ConnectToServer - When a server is selected this will trigger
-     */
-    connectToServer(ip) {
-
-
+    showContext(event) {
+        const menu = <Menu>
+            <MenuItem icon="edit" text="Rename" />
+            <MenuItem icon="lock" text="Archive" />
+        </Menu>
+        ContextMenu.show(menu, { left: event.clientX, top: event.clientY }, () => {
+            // menu was closed; callback optional
+        });
     }
     /**
      * RenderServers - Renders all servers listed on the sidebar
@@ -41,7 +43,7 @@ export default class ProjectViewer extends Component {
             for (let p in this.props.projects) {
                 let project = this.props.projects[p]
                 items.push(
-                    <Layout.Grid key={p} height="75px" width="100%" style={{ borderBottom: "1px solid black", cursor: "pointer" }} className="box">
+                    <Layout.Grid key={p} height="75px" width="100%" style={{ borderBottom: "1px solid black", cursor: "pointer" }} onContextMenu={this.showContext.bind(true)} className="box">
                         <p>{project.name}</p>
                         <p>Last Edited: {moment(new Date(project.lastEdited.replace(/\s/g, "T")).toUTCString()).fromNow()}</p>
                     </Layout.Grid>
@@ -90,11 +92,10 @@ export default class ProjectViewer extends Component {
                                 </Card>
                             </Layout.Grid>
                             <Layout.Grid>
-                                <Card interactive={false} elevation={Elevation.TWO} style={{ margin: 10 }}>
-
+                                <Card interactive={false} elevation={Elevation.TWO} style={{ margin: 10, height: 108 }}>
                                     <Layout.Grid row>
                                         <Layout.Grid>
-                                            <h2>{this.props.userData.name}<sup></sup></h2>
+                                            <h2>{this.props.userData.name}</h2>
                                         </Layout.Grid>
                                         <Layout.Grid col>
                                             {renderRoles(this.props.userData.roles)}
